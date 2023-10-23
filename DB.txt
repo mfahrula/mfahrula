@@ -1,0 +1,416 @@
+drop table if exists AGEN;
+
+drop table if exists BARANG;
+
+drop table if exists BELI;
+
+drop table if exists CUSTOMER;
+
+drop table if exists KARYAWAN;
+
+drop table if exists KARYAWAN_KONTRAK;
+
+drop table if exists KARYAWAN_TETAP;
+
+drop table if exists MELAKUKAN;
+
+drop table if exists PEMBAYARAN;
+
+/*==============================================================*/
+/* Table: AGEN                                                  */
+/*==============================================================*/
+create table AGEN
+(
+   ID_AGEN              varchar(50) not null,
+   NO_TELP               varchar(50),
+   ALAMAT               varchar(50),
+   NAMA                 varchar(50),
+   primary key (ID_AGEN)
+);
+
+DROP TABLE AGEN;
+
+insert into AGEN values ('G01','0823648635762','BENOWO','ALEK')
+insert into AGEN values ('G02','0821673591713','JAJARAN','SUMI')
+insert into AGEN values ('G03','0813707465851','ASEM','SUNGO')
+insert into AGEN values ('G04','0823456829753','SAMBEN','ALIP')
+insert into AGEN values ('G05','0815654289836','PASINAN','RIKO')
+insert into AGEN values ('G06','0815654289816','MENGANTI','NIKO')
+insert into AGEN values ('G07','0815654289867','KRIAN','ASEP')
+
+select * from AGEN;
+select * from AGEN where ALAMAT = (select ALAMAT from AGEN where ID_AGEN = 'G06');
+select * from AGEN where ALAMAT = any (select ALAMAT from AGEN where ALAMAT = 'PASINAN') order by ID_AGEN asc;
+
+/*==============================================================*/
+/* Table: BARANG                                                */
+/*==============================================================*/
+create table BARANG
+(
+   ID_BARANG            varchar(50) not null,
+   ID_K                 varchar(50),
+   ID_AGEN              varchar(50),
+   BRAND                varchar(50),
+   HARGA                varchar(50),
+   primary key (ID_BARANG)
+);
+
+DROP TABLE BARANG
+
+insert into BARANG values ('B01','K011','G01','SONY','23.000.000')
+insert into BARANG values ('B02','K012','G02','CANON','17.000.000')
+insert into BARANG values ('B03','K013','G03','LEICA','39.000.000')
+insert into BARANG values ('B04','K014','G04','FUJIFILM','25.000.000')
+insert into BARANG values ('B05','K015','G05','SAMSUNG','15.000.000')
+insert into BARANG values ('B06','K016','G06','PANASONIC','10.000.000')
+insert into BARANG values ('B07','K017','G07','MINOLTA','40.000.000')
+
+select * from BARANG;
+select * from BARANG where ID_BARANG IN (select ID_BARANG from BARANG where ID_BARANG <'B03'
+select * from BARANG where ID_BARANG = any (select ID_BARANG from BARANG where ID_BARANG ='B01');
+
+
+/*==============================================================*/
+/* Table: BELI                                                  */
+/*==============================================================*/
+create table BELI
+(
+   ID_BARANG            varchar(50) not null,
+   ID_C                 varchar(50) not null,
+   primary key (ID_BARANG, ID_C)
+);
+DROP TABLE BELI;
+insert into BELI values ('B01','C001')
+insert into BELI values ('B02','C002')
+insert into BELI values ('B03','C003')
+insert into BELI values ('B04','C004')
+insert into BELI values ('B05','C005')
+
+select * from BELI;
+select * from BELI where ID_BARANG = any (select ID_BARANG from BELI where ID_barang!='C003')order by ID_BARANG desc;
+
+/*==============================================================*/
+/* Table: CUSTOMER                                              */
+/*==============================================================*/
+create table  BACKUP_CUSTOMER
+(
+   ID_C                 varchar(50) not null,
+   NAMA_C               varchar(50),
+   EMAIL_C              varchar(50),
+   ALAMAT_C             varchar(50),
+   
+);
+
+
+insert into CUSTOMER values ('C001','FAHRUL','MFAHRUL01@GMAIL.COM','BENOWO')
+insert into CUSTOMER values ('C002','HATTA','WEDEMBOYS11@GMAIL.COM','PERAK')
+insert into CUSTOMER values ('C003','ZAINAL','SUKRONWALFZ@GMAIL.COM','SEMEMI')
+insert into CUSTOMER values ('C004','DEVIRA','DEVIJEN1@GMAIL.COM','WONOREJO')
+insert into CUSTOMER values ('C005','DHINY','DHINYTER7@GMAIL.COM','JAMBANGAN')
+insert into CUSTOMER values ('C006','ADIT','ADHITT12@GMAIL.COM','MANUKAN')
+insert into CUSTOMER values ('C007','KIKI','KIKIKI76@GMAIL.COM','KENDUNG')
+insert into CUSTOMER values ('C008','ANJAS','ANJAS6@GMAIL.COM','MORKO')
+
+
+select * from CUSTOMER;
+
+DROP TABLE CUSTOMER;
+
+/*==============================================================*/
+/* Table: KARYAWAN                                              */
+/*==============================================================*/
+create table KARYAWAN
+(
+   ID_K                 varchar(50) not null,
+   ID_BARANG            varchar(50),
+   ID_PEMBAYARAN        varchar(50),
+   NAMA_K               varchar(50),
+   ALAMAT_K             varchar(50),
+   primary key (ID_K)
+);
+DROP TABLE KARYAWAN;
+insert into KARYAWAN values ('K011','B01','Y021','FAHRUL','BENOWO')
+insert into KARYAWAN values ('K012','B02','Y022','HATTA','PERAK')
+insert into KARYAWAN values ('K013','B03','Y023','ZAINAL','SEMEMI')
+insert into KARYAWAN values ('K014','B05','Y024','DEVIRA','WONOREJO')
+insert into KARYAWAN values ('K015','B04','Y025','DHINY','KEBONSARI')
+insert into KARYAWAN values ('K016','B06','Y026','ADHIT','MANUKAN')
+insert into KARYAWAN values ('K017','B07','Y027','TAUHID','KRIAN')
+
+select * from KARYAWAN;
+select * from BELI;
+
+select KARYAWAN.ID_K, KARYAWAN.NAMA_K, KARYAWAN.ALAMAT_K, BELI.ID_BARANG, BELI.ID_C from KARYAWAN,BELI where KARYAWAN.ID_BARANG = BELI.ID_BARANG and KARYAWAN.ALAMAT_k not like '%BENOWO%' and beli.ID_C LIKE '%4';
+
+select * from KARYAWAN where NAMA_K like 'D%'; 
+/*==============================================================*/
+/* Table: KARYAWAN_KONTRAK                                      */
+/*==============================================================*/
+create table KARYAWAN_KONTRAK
+(
+   ID_K                 varchar(50) not null,
+   ID_BARANG            varchar(50),
+   ID_PEMBAYARAN        varchar(50),
+   NAMA_K               varchar(50),
+   ALAMAT_K             varchar(50),
+   NILAI_KONTRAK        varchar(50),
+   primary key (ID_K)
+);
+
+insert into KARYAWAN_KONTRAK values ('K01','B01','Y021','FAHRUL','BENOWO','1 TAHUN')
+insert into KARYAWAN_KONTRAK values ('K02','B02','YO22','HATTA','PERAK','6 BULAN')
+insert into KARYAWAN_KONTRAK values ('K03','B03','Y023','ZAINAL','SEMEMI','3 BULAN')
+insert into KARYAWAN_KONTRAK values ('K04','B04','Y024','DEVIRA','WONOREJO','5 TAHUN')
+insert into KARYAWAN_KONTRAK values ('K05','B05','Y025','DHINY','KEBONSARI','8 BULAN')
+insert into KARYAWAN_KONTRAK values ('K06','B06','Y026','ADHIT','MANUKAN','2 TAHUN')
+
+select * from KARYAWAN_KONTRAK;
+
+DROP TABLE KARYAWAN_KONTRAK;
+
+/*==============================================================*/
+/* Table: KARYAWAN_TETAP                                        */
+/*==============================================================*/
+create table KARYAWAN_TETAP
+(
+   ID_K                 varchar(50) not null,
+   ID_BARANG            varchar(50),
+   ID_PEMBAYARAN        varchar(50),
+   NAMA_K               varchar(50),
+   ALAMAT_K             varchar(50),
+   GAJI                 varchar(50),
+   primary key (ID_K)
+);
+
+insert into KARYAWAN_TETAP values ('FH1','ABCD1','QWERT11','FAHRUL','BENOWO','1 JUTA')
+insert into KARYAWAN_TETAP values ('FH2','ABCD2','QWERT12','HATTA','PERAK','700 RB')
+insert into KARYAWAN_TETAP values ('FH3','ABCD3','QWERT13','ZAINAL','SEMEMI','2 JUTA')
+insert into KARYAWAN_TETAP values ('FH4','ABCD4','QWERT14','DEVIRA','WONOREJO','3 JUTA')
+insert into KARYAWAN_TETAP values ('FH5','ABCD5','QWERT15','DHINY','KEBONSARI','4 JUTA')
+insert into KARYAWAN_TETAP values ('FH6','ABCD6','QWERT16','ADHIT','MANUKAN','5 JUTA')
+
+select * from KARYAWAN_TETAP;
+
+DROP TABLE KARYAWAN_KONTRAK;
+
+/*==============================================================*/
+/* Table: MELAKUKAN                                             */
+/*==============================================================*/
+create table MELAKUKAN
+( 
+   ID_C                 varchar(50) not null,
+   ID_PEMBAYARAN        varchar(50) not null,
+   TGL_BAYAR            date,
+   WAKTU_BAYAR          time,
+   primary key (ID_C, ID_PEMBAYARAN)
+);
+
+insert into MELAKUKAN values ('C001','Y021','2019-11-23','12:34:54')
+insert into MELAKUKAN values ('C002','Y022','2019-12-22','11:33:51')
+insert into MELAKUKAN values ('C003','Y023','2019-10-20','10:30:40')
+
+select * from MELAKUKAN;
+
+/*==============================================================*/
+/* Table: PEMBAYARAN                                            */
+/*==============================================================*/
+create table PEMBAYARAN
+(
+   ID_PEMBAYARAN        varchar(50) not null,
+   ID_K                 varchar(50),
+   JUMLAH_PEMBAYARAN    varchar(50),
+   primary key (ID_PEMBAYARAN)
+);
+
+DROP TABLE PEMBAYARAN;
+
+insert into PEMBAYARAN values ('Y021','K011','100 JUTA')
+insert into PEMBAYARAN values ('Y022','K012','110 JUTA')
+insert into PEMBAYARAN values ('Y023','K013','120 JUTA')
+insert into PEMBAYARAN values ('Y024','K014','130 JUTA')
+insert into PEMBAYARAN values ('Y025','K015','140 JUTA')
+insert into PEMBAYARAN values ('Y026','K016','150 JUTA')
+
+select * from PEMBAYARAN;
+
+SELECT KARYAWAN.NAMA_K, BARANG.ID_BARANG, BARANG.BRAND FROM KARYAWAN FULL OUTER JOIN BARANG ON KARYAWAN.ID_BARANG = BARANG.ID_BARANG;
+SELECT CUSTOMER.NAMA_C, CUSTOMER.ALAMAT_c, BARANG.BRAND, BARANG.HARGA FROM CUSTOMER FULL OUTER JOIN BELI ON BELI.ID_C = CUSTOMER.ID_C FULL OUTER JOIN BARANG ON BARANG.ID_BARANG = BELI.ID_BARANG;
+SELECT CUSTOMER.NAMA_C, PEMBAYARAN.ID_PEMBAYARAN, MELAKUKAN.TGL_BAYAR, MELAKUKAN.WAKTU_BAYAR, PEMBAYARAN.JUMLAH_PEMBAYARAN FROM CUSTOMER FULL OUTER JOIN MELAKUKAN ON MELAKUKAN.ID_C = CUSTOMER.ID_C FULL OUTER JOIN PEMBAYARAN ON PEMBAYARAN.ID_PEMBAYARAN = MELAKUKAN.ID_PEMBAYARAN;
+SELECT AGEN.ID_AGEN, AGEN.NAMA, BARANG.BRAND FROM AGEN FULL OUTER JOIN BARANG ON BARANG.ID_AGEN = AGEN.ID_AGEN;
+SELECT KARYAWAN.ID_K, KARYAWAN.NAMA_K, PEMBAYARAN.ID_PEMBAYARAN, PEMBAYARAN.JUMLAH_PEMBAYARAN FROM KARYAWAN FULL OUTER JOIN PEMBAYARAN ON PEMBAYARAN.ID_PEMBAYARAN = KARYAWAN.ID_PEMBAYARAN;
+
+
+alter table BARANG add constraint FK_DATA2 foreign key (ID_K)
+      references KARYAWAN (ID_K) on delete restrict on update restrict;
+
+alter table BARANG add constraint FK_KIRIM foreign key (NO_TELP)
+      references AGEN (NO_TELP) on delete restrict on update restrict;
+	  
+alter table BELI add constraint FK_BELI foreign key (ID_BARANG)
+      references BARANG (ID_BARANG) on delete restrict on update restrict;
+
+alter table BELI add constraint FK_BELI2 foreign key (ID_C)
+      references CUSTOMER (ID_C) on delete restrict on update restrict;
+
+alter table KARYAWAN add constraint FK_DATA foreign key (ID_BARANG)
+      references BARANG (ID_BARANG) on delete restrict on update restrict;
+
+alter table KARYAWAN add constraint FK_KELOLA foreign key (ID_PEMBAYARAN)
+      references PEMBAYARAN (ID_PEMBAYARAN) on delete restrict on update restrict;
+
+alter table KARYAWAN_KONTRAK add constraint FK_ID_K2 foreign key (ID_K)
+      references KARYAWAN (ID_K) on delete restrict on update restrict;
+
+alter table KARYAWAN_TETAP add constraint FK_ID_K foreign key (ID_K)
+      references KARYAWAN (ID_K) on delete restrict on update restrict;
+
+alter table MELAKUKAN add constraint FK_MELAKUKAN foreign key (ID_C)
+      references CUSTOMER (ID_C) on delete restrict on update restrict;
+
+alter table MELAKUKAN add constraint FK_MELAKUKAN2 foreign key (ID_PEMBAYARAN)
+      references PEMBAYARAN (ID_PEMBAYARAN) on delete restrict on update restrict;
+
+alter table PEMBAYARAN add constraint FK_KELOLA2 foreign key (ID_K)
+      references KARYAWAN (ID_K) on delete restrict on update restrict;
+
+
+/*==============================================================*/
+/* Table: PROCEDURE                                            */
+/*==============================================================*/
+
+create procedure showpembayaran
+as begin
+select * from PEMBAYARAN
+end
+go
+
+exec showpembayaran
+
+create procedure addpembayaran
+as begin
+insert into pembayaran values ('Y024','K014','130 JUTA')
+end
+go
+
+exec addpembayaran
+
+create procedure delpembayaran
+as begin
+delete from pembayaran where id_pembayaran ='Y024'
+end
+go
+
+exec delpembayaran
+/*==============================================================*/
+/* Table: FUNCTION                                              */
+/*==============================================================*/
+
+select count (NAMA_K) as datakaryawan from KARYAWAN;
+select avg (HARGA) as rataratabarang from BARANG;
+SELECT * FROM BARANG
+
+SELECT BARANG.ID_K, BARANG.ID_AGEN, BARANG.BRAND
+FROM BARANG 
+INNER JOIN PEMBAYARAN ON BARANG.ID_K = PEMBAYARAN.ID_K
+
+SELECT * FROM BELI;
+SELECT * FROM CUSTOMER;
+
+CREATE VIEW laporan
+AS SELECT 
+BELI.ID_BARANG,
+BELI.ID_C,
+CUSTOMER.ID_C,
+CUSTOMER.NAMA_C,
+CUSTOMER.EMAIL_C,
+CUSTOMER.ALAMAT_C 
+FROM BELI FULL JOIN CUSTOMER
+ON BELI.ID_C = CUSTOMER.ID_C;
+
+CREATE VIEW LAPORAN
+AS SELECT
+KARYAWAN.NAMA_K, BARANG.ID_BARANG, BARANG.BRAND FROM KARYAWAN FULL OUTER JOIN BARANG ON KARYAWAN.ID_BARANG = BARANG.ID_BARANG;
+CREATE OR ALTER VIEW LAPORAN
+AS SELECT
+KARYAWAN.NAMA_K AS NK,
+BARANG.ID_BARANG AS NB,
+BARANG.BRAND
+FROM KARYAWAN FULL OUTER JOIN BARANG 
+ON KARYAWAN.ID_BARANG = BARANG.ID_BARANG;
+
+SELECT * FROM LAPORAN ORDER BY NK,NB, BRAND;
+CREATE VIEW datapembayaran
+AS
+SELECT 
+KARYAWAN.ID_K, 
+KARYAWAN.NAMA_K,
+PEMBAYARAN.ID_PEMBAYARAN,
+PEMBAYARAN.JUMLAH_PEMBAYaARAN
+FROM KARYAWAN FULL OUTER JOIN PEMBAYARAN
+ON PEMBAYARAN.ID_PEMBAYARAN = KARYAWAN.ID_PEMBAYARAN;
+SELECT*FROM datapembayaran
+
+
+
+SELECT * FROM 
+CREATE TRIGGER hapuscustomer ON CUSTOMER
+FOR DELETE
+AS 
+DECLARE
+   @ID_C                 varchar(50), 
+   @NAMA_C               varchar(50),
+   @EMAIL_C              varchar(50),
+   @ALAMAT_C             varchar(50)
+ 
+
+--set variable
+SELECT @ID_C = ID_C from deleted
+SELECT @NAMA_C = NAMA_C from deleted
+SELECT @EMAIL_C = EMAIL_C from deleted
+SELECT @ALAMAT_C = ALAMAT_C from deleted
+
+--eksekusi
+INSERT INTO BACKUP_CUSTOMER VALUES
+(@ID_C, @NAMA_C, @EMAIL_C, @ALAMAT_C)
+ DELETE FROM CUSTOMER WHERE ID_C = 'C007'
+ SELECT*FROM CUSTOMER 
+ CREATE OR ALTER TRIGGER upd_pel ON CUSTOMER
+AFTER UPDATE
+AS
+BEGIN
+UPDATE BACKUP_CUSTOMER SET NAMA_C = nc.NAMA_C
+FROM BACKUP_CUSTOMER AS eh
+INNER JOIN inserted as nc
+ON eh.ID_C = nc.ID_C
+END
+GO
+insert into CUSTOMER values ('C008','ANJAS','ANJAS6@GMAIL.COM','MORKO')
+
+SELECT * FROM BACKUP_CUSTOMER
+UPDATE CUSTOMER SET NAMA_C = 'ANGGITA DINI'
+WHERE ID_C = 'C009'
+SELECT*FROM CUSTOMER
+SELECT*FROM BACKUP_CUSTOMER
+
+CREATE OR ALTER TRIGGER tambahcustomer ON CUSTOMER
+FOR INSERT 
+AS
+
+	declare @ID_C                 varchar(50), 
+		    @NAMA_C               varchar(50),
+            @EMAIL_C              varchar(50),
+            @ALAMAT_C             varchar(50)
+
+	SELECT @ID_C = CUSTOMER.ID_C FROM inserted CUSTOMER;
+	SELECT @NAMA_C = CUSTOMER.NAMA_C FROM inserted CUSTOMER;
+	SELECT @EMAIL_C = CUSTOMER.EMAIL_C FROM inserted CUSTOMER;
+	SELECT @ALAMAT_C = CUSTOMER.ALAMAT_C FROM inserted CUSTOMER;
+
+INSERT INTO BACKUP_CUSTOMER (ID_C, NAMA_C, EMAIL_C, ALAMAT_C)
+VALUES (@ID_C, @NAMA_C, @EMAIL_C, @ALAMAT_C);
+PRINT 'CUSTOMER BARU BERHASIL DITAMBAHKAN'
+GO
+
+insert into CUSTOMER values ('C011','BOLAK','BOPAIK01@GMAIL.COM','POREH')
+
+SELECT*FROM CUSTOMER
